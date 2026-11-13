@@ -1,0 +1,47 @@
+
+// Arduino Automatic Temperature Controller
+// Sensor: LM35
+// Relay: Pin 7
+
+const int sensorPin = A0;
+const int relayPin = 7;
+
+float temperature;
+float setTemperature = 30.0;
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(relayPin, OUTPUT);
+
+  // Relay OFF (active HIGH relay assumed)
+  digitalWrite(relayPin, LOW);
+}
+
+void loop() {
+
+  // Read LM35 sensor
+  int sensorValue = analogRead(sensorPin);
+
+  // Convert analog value into voltage
+  float voltage = sensorValue * (5.0 / 1023.0);
+
+  // LM35 temperature conversion
+  temperature = voltage * 100.0;
+
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" C");
+
+  // Temperature control
+  if (temperature < setTemperature) {
+    digitalWrite(relayPin, HIGH); // Heater ON
+    Serial.println("Heater ON");
+  }
+  else {
+    digitalWrite(relayPin, LOW); // Heater OFF
+    Serial.println("Heater OFF");
+  }
+
+  delay(1000);
+}
